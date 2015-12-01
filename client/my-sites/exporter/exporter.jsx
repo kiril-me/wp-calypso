@@ -10,6 +10,8 @@ import CompactCard from 'components/card/compact';
 import Gridicon from 'components/gridicon';
 import Button from 'components/forms/form-button';
 import AdvancedSettings from 'my-sites/exporter/advanced-settings';
+import DownloadInformationPanel from './download-information-panel';
+import Spinner from 'components/spinner';
 
 export default React.createClass( {
 	displayName: 'Exporter',
@@ -27,11 +29,17 @@ export default React.createClass( {
 					<header>
 						<Button
 							className="exporter__export-button"
-							disabled={ false }
+							disabled={ !this.props.canStartExport }
 							isPrimary={ true }
+							onClick={ this.props.startExport }
 						>
-							{ this.translate( 'Export' ) }
+							{ this.props.shouldShowProgress ? this.translate( 'Exporting…' ) : this.translate( 'Export' ) }
 						</Button>
+						{ this.props.shouldShowProgress &&
+							<div className="exporter__export-spinner">
+								<Spinner size={ 24 } />
+							</div>
+						}
 						<h1 className="exporter__title">
 							{ this.translate( 'Download an Export File' ) }
 						</h1>
@@ -48,9 +56,20 @@ export default React.createClass( {
 					this.props.advancedSettings.isVisible &&
 					<AdvancedSettings
 						{ ...this.props.advancedSettings }
+						canStartExport={ this.props.canStartExport }
 						onToggleFieldset={ this.props.toggleSection }
+						onClickExport={ this.props.startExport }
 					/>
 				}
+
+				{
+					( this.props.downloadURL || this.props.failureReason ) &&
+					<DownloadInformationPanel
+						downloadURL={ this.props.downloadURL }
+						downloadFilename={ this.props.downloadFilename }
+						failureReason={ this.props.failureReason } />
+				}
+
 			</div>
 		);
 	}

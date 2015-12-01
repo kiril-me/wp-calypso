@@ -1,3 +1,7 @@
+.section-export {
+	padding-bottom: 100px;
+}
+
 .exporter__title {
 	margin-bottom: 1em;
 
@@ -8,8 +12,38 @@
 	clear: left;
 }
 
+.exporter__export-spinner {
+	float: right;
+	padding: 8px;
+}
+
 .exporter__export-button {
 	float: right;
+}
+
+.exporter__success-heading {
+	margin-bottom: 0.5em;
+
+	font-size: 20px;
+	font-weight: 200;
+	color: $gray-dark;
+}
+
+.exporter__download-label {
+	color: $gray;
+	margin-bottom: 1em;
+	font-size: 14px;
+	font-weight: 200;
+}
+
+.exporter__download-icon {
+	position: relative;
+	top: 4px;
+	margin-right: 8px;
+}
+
+.exporter__download-link-text {
+	font-weight: bold;
 }
 
 .exporter__more-info.card {
