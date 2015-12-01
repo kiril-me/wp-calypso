@@ -43,7 +43,15 @@ module.exports = {
 		}
 
 		if ( nextProps.site.settings ) {
-			return this.setState( this.getSettingsFromSite( nextProps.site ) );
+			let newState = this.getSettingsFromSite( nextProps.site );
+			//for dirtyFields, see lib/mixins/dirty-linked-state
+			//If we have any fields that the user has updated, do not wipe out
+			//those fields from the poll update.
+			const dirtyFields = this.state.dirtyFields || [];
+			dirtyFields.forEach( function( dirtyField ) {
+				delete newState[ dirtyField ];
+			} );
+			return this.setState( newState );
 		}
 
 		/**
@@ -131,7 +139,9 @@ module.exports = {
 
 		notices.clearNotices( 'notices' );
 
-		this.setState( { submittingForm: true } );
+		//for dirtyFields, see lib/mixins/dirty-linked-state
+		this.setState( { submittingForm: true, dirtyFields: [] } );
+
 		site.saveSettings( this.state, function( error ) {
 			if ( error ) {
 				// handle error case here
