@@ -1,7 +1,21 @@
-.mlb-themes__terms h2 {
-	font-size: 120%;
+
+
+.mlb-theme-selection__terms p {
+	color: #87a6bc;
+	font-size: 14px;
 }
 
-.mlb-themes__terms p {
-	font-size: 80%;
+.mlb-theme-selection__themes-list {
+	display: flex;
+	flex-flow: row wrap;
+	list-style: none;
+	padding: 0;
+	margin: 0 -10px; // items flush against list edge
+}
+
+.mlb-theme-selection__header {
+	color: #4f748e;
+	font-size: 22px;
+	font-weight: 200;
+	margin: 10px 20px 10px 0px;
 }
