@@ -25,6 +25,7 @@ var Masterbar = require( './masterbar' ),
 	PulsingDot = require( 'components/pulsing-dot' ),
 	SitesListNotices = require( 'lib/sites-list/notices' ),
 	PollerPool = require( 'lib/data-poller' ),
+	SupportUser = require( 'components/support-user' ),
 	KeyboardShortcutsMenu;
 
 if ( config.isEnabled( 'keyboard-shortcuts' ) ) {
@@ -102,6 +103,7 @@ module.exports = React.createClass( {
 		return (
 			<div className={ sectionClass }>
 				{ config.isEnabled( 'keyboard-shortcuts' ) ? <KeyboardShortcutsMenu /> : null }
+				<SupportUser />
 				<Masterbar user={ this.props.user } section={ this.state.section } sites={ this.props.sites }/>
 				<div className={ loadingClass } ><PulsingDot active={ this.state.isLoading } /></div>
 				<div id="content" className="wp-content">
