@@ -26,7 +26,7 @@
 	"features": {
 		"code-splitting": true,
 
-		"reader": true,
+		"reader": false,
 		"reader/teams": true,
 		"reader/lists": true,
 		"reader/activities": true,
@@ -310,5 +310,12 @@
 		{ "value": 450, "langSlug": "zh-hk", "name": "zh-hk - 中文(繁體)" },
 		{ "value": 451, "langSlug": "zh-sg", "name": "zh-sg - 中文(简体)" },
 		{ "value": 452, "langSlug": "zh-tw", "name": "zh-tw - 中文(繁體)", "popular": 14 }
+	],
+
+	"header_menu": [
+		{
+			"title": "CMS",
+			"url": "cms"
+		}
 	]
 }

@@ -68,9 +68,30 @@ module.exports = React.createClass( {
 		return <span className="noticon noticon-wordpress" />;
 	},
 
+	renderHeaderMenu: function() {
+		var headerMenu = config('header_menu');
+		var menuRows = [], menu, item;
+
+		if(headerMenu && headerMenu.length > 0) {
+			for(var i = 0; i < headerMenu.length; i++) {
+				item = headerMenu[i];
+				menu = (<li className={ this.itemLinkClass( item.title, { home: true, reader: true } ) }>
+					<a href={ item.url } onClick={ this.focusContent } title={ item.description } rel="home">
+						<span className="noticon noticon-reader"></span>
+						<span className="section-label">{ item.title }</span>
+					</a>
+				</li>);
+				menuRows.push(menu);
+			}
+		}
+
+		return menuRows;
+	},
+
 	render: function() {
 		var notificationsClasses = 'notifications',
 			notificationsLink = this.renderNotificationsLink(),
+			headerMenu = this.renderHeaderMenu(),
 			readerUrl = '//wordpress.com/',
 			meUrl = '//wordpress.com/me',
 			sites = this.props.sites,
@@ -125,6 +146,7 @@ module.exports = React.createClass( {
 							<span className="section-label">{ this.translate( 'Reader', { comment: 'Toolbar, must be shorter than ~12 chars' } ) }</span>
 						</a>
 					</li>
+					{ headerMenu }
 				</ul>
 				<ul className="sections-menu menu-right">
 					<MasterbarNewPost
