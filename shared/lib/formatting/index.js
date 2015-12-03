@@ -2,6 +2,9 @@
  * External Dependencies
  */
 var trim = require( 'lodash/string/trim' ),
+	forIn = require( 'lodash' ).forIn,
+	isArray = require( 'lodash' ).isArray,
+	isObject = require( 'lodash' ).isObject,
 	warning = require( 'react/lib/warning' );
 
 /**
@@ -332,8 +335,38 @@ function unescapeAndFormatSpaces( str ) {
 	return decodeEntities( str ).replace( / /g, nbsp );
 }
 
+/**
+ * Traverse an object or array decoding HTML entities on string properties
+ *
+ * It does it's job in place, so the object passed will be updated.
+ * This helper is used to decode HTML entities in strings properties,
+ * recursively on an object or array.
+ * We need to decode HTML entities because the REST API returns them
+ * already encoded, and React will encode them again.
+ *
+ * @param	{Object} obj Object to traverse in preparation for React rendering
+ */
+function traverseAndDecodeEntities( obj ) {
+	forIn( obj, function( val, key ) {
+		if ( typeof val === 'string' ) {
+			obj[key] = decodeEntities( val );
+		}
+		if ( isArray( val ) ) {
+			val.forEach( function( el ) {
+				if ( isObject( el ) ) {
+					traverseAndDecodeEntities( el );
+				}
+			} );
+		}
+		if ( isObject( val ) ) {
+			traverseAndDecodeEntities( obj[key] );
+		}
+	} );
+}
+
 module.exports = {
 	decodeEntities: decodeEntities,
+	traverseAndDecodeEntities: traverseAndDecodeEntities,
 	interpose: interpose,
 	stripHTML: stripHTML,
 	unicodeToString: unicodeToString,
