@@ -40,6 +40,7 @@ var controller = {
 		analytics.pageView.record( basePath, analyticsPageTitle );
 
 		React.render(
+			// TODO: Remove function when using React 0.14
 			React.createElement( ReduxProvider, { store: context.reduxStore }, () => {
 				return React.createElement( ThemesComponent, {
 					key: site_id,

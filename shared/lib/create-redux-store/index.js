@@ -2,19 +2,17 @@
  * External dependencies
  */
 import thunkMiddleware from 'redux-thunk';
-import createLogger from 'redux-logger';
 import { createStore, applyMiddleware } from 'redux';
 
 /**
  * Internal dependencies
  */
 import reducers from './reducers';
-
-const loggerMiddleware = createLogger();
+import { analyticsMiddleware } from 'lib/themes/middlewares.js';
 
 export default () => {
 	return applyMiddleware(
 		thunkMiddleware,
-		loggerMiddleware
+		analyticsMiddleware
 	)( createStore )( reducers );
 };
