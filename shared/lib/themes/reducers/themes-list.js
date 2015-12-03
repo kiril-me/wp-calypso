@@ -98,18 +98,6 @@ export const reducer = ( state = initialState, payload ) => {
 	return state;
 };
 
-export function getThemesList( state ) {
-	return state.get( 'list' );
-}
-
 export function getQueryParams( state ) {
 	return state.get( 'query' ).toObject();
-}
-
-export function isFetchingNextPage( state ) {
-	return state.getIn( [ 'queryState', 'isFetchingNextPage' ] );
-}
-
-export function isLastPage( state ) {
-	return state.getIn( [ 'queryState', 'isLastPage' ] );
 }

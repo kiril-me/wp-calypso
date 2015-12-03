@@ -13,29 +13,30 @@ import { connect } from 'react-redux';
  */
 import Constants from 'lib/themes/constants';
 import * as allActions from 'lib/themes/actions';
-import { getThemeById } from 'lib/themes/reducers/themes';
-import { getThemesList, getQueryParams, isLastPage, isFetchingNextPage } from 'lib/themes/reducers/themes-list';
+import {
+	getFilteredThemes,
+	getParams,
+	hasSiteChanged,
+	isJetpack,
+	isLastPage,
+	isFetchingNextPage
+} from 'lib/themes/selectors';
 
 const actions = pick( allActions, [
 	'query',
 	'fetchNextPage',
-	'incrementThemesPage',
-	'fetchThemes',
-	'fetchJetpackThemes',
 ] );
 
-function getThemesState( state ) {
+function getThemesState( state, { search } ) {
 	return {
-		themes: getThemesInList( state ),
-		lastPage: isLastPage( state.themesList ),
-		loading: isFetchingNextPage( state.themesList )
-		//search: getQueryParams( state.themesList ).search
+		themes: getFilteredThemes( state, search ),
+		lastPage: isLastPage( state ),
+		loading: isFetchingNextPage( state ),
+		lastQuery: {
+			hasSiteChanged: hasSiteChanged( state ),
+			isJetpack: isJetpack( state )
+		}
 	};
-}
-
-function getThemesInList( state ) {
-	return getThemesList( state.themesList ).map( themeId =>
-		getThemeById( state.themes, themeId ) );
 }
 
 const ThemesListFetcher = React.createClass( {
@@ -56,9 +57,6 @@ const ThemesListFetcher = React.createClass( {
 		loading: React.PropTypes.bool.isRequired,
 		query: React.PropTypes.func.isRequired,
 		fetchNextPage: React.PropTypes.func.isRequired,
-		incrementThemesPage: React.PropTypes.func.isRequired,
-		fetchThemes: React.PropTypes.func.isRequired,
-		fetchJetpackThemes: React.PropTypes.func.isRequired,
 	},
 
 	componentDidMount: function() {
@@ -66,11 +64,14 @@ const ThemesListFetcher = React.createClass( {
 	},
 
 	componentWillReceiveProps: function( nextProps ) {
-		console.log( 'prop-search-2', nextProps.search );
-		const propKeys = [ 'search', 'tier' ];
-
-		if ( propKeys.some( key => this.props[ key ] !== nextProps[ key ] ) ) {
-			console.log( 'props changed' );
+		if (
+				nextProps.tier !== this.props.tier || (
+					nextProps.search !== this.props.search && (
+						! nextProps.lastQuery.isJetpack ||
+						nextProps.lastQuery.hasSiteChanged
+						)
+					)
+			) {
 			this.refresh( nextProps );
 		}
 	},
@@ -115,20 +116,14 @@ const ThemesListFetcher = React.createClass( {
 		const {
 			site = false,
 			onRealScroll = () => null,
-
-			// actions assumed bound to dispatch
-			incrementThemesPage,
-			fetchThemes,
-			fetchJetpackThemes,
+			fetchNextPage,
 		} = this.props;
 
 		if ( options.triggeredByScroll ) {
 			onRealScroll();
 		}
 
-		const fetcher = site.jetpack ? fetchJetpackThemes : fetchThemes;
-		incrementThemesPage( site );
-		fetcher( site );
+		fetchNextPage( site );
 	},
 
 	render: function() {
@@ -140,12 +135,10 @@ const ThemesListFetcher = React.createClass( {
 
 } );
 
-function propagateAndMerge( state, props ) {
-	console.log( 'prop-search-1', props.search );
-	return Object.assign( {}, props, getThemesState( state.themes ) );
-}
-
 module.exports = connect(
-	propagateAndMerge,
+	( state, props ) => Object.assign( {},
+		props,
+		getThemesState( state, props )
+	),
 	bindActionCreators.bind( null, actions )
 )( ThemesListFetcher );
