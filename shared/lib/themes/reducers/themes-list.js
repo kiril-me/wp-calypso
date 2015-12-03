@@ -31,7 +31,7 @@ export const initialState = query( fromJS( {
 } ) );
 
 /**
- * Mutating helpers
+ * Helpers
  */
 
 function add( ids, list ) {
@@ -49,10 +49,6 @@ function query( state, params = {} ) {
 		.update( 'nextId', id => id + 1 );
 }
 
-/**
- * Pure helpers
- */
-
 function isActionForLastPage( list, action ) {
 	return ! action.found ||
 		list.length === action.found ||
@@ -60,6 +56,7 @@ function isActionForLastPage( list, action ) {
 }
 
 export const reducer = ( state = initialState, payload ) => {
+	// TODO: remove this hack once we've moved all of /themes to Redux:
 	const { action = payload } = payload;
 
 	switch ( action.type ) {
@@ -77,9 +74,6 @@ export const reducer = ( state = initialState, payload ) => {
 
 				return newState.setIn( [ 'queryState', 'isLastPage' ],
 						isActionForLastPage( newState.get( 'list' ), action ) );
-				//return searchJetpackThemes(
-				//	newState.setIn( [ 'queryState', 'isLastPage' ],
-				//		isActionForLastPage( newState.get( 'list' ), action ) ) );
 			}
 			return state;
 
@@ -99,16 +93,8 @@ export const reducer = ( state = initialState, payload ) => {
 			// state is different from the old one, we need something to change
 			// here.
 			return state.set( 'active', action.theme.id );
-
-		case ThemeConstants.SEARCH_THEMES:
-			const { themesList } = action;
-			return themesList
-				.setIn( [ 'queryState', 'isFetchingNextPage' ], false );
-
-			//return searchJetpackThemes(
-			//	state.setIn( [ 'queryState', 'isFetchingNextPage' ], false )
-			//);
 	}
+
 	return state;
 };
 

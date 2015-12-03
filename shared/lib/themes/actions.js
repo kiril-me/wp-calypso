@@ -11,11 +11,9 @@ const debug = debugFactory( 'calypso:themes:actions' ); //eslint-disable-line no
  */
 import ThemeConstants from 'lib/themes/constants';
 import ThemeHelpers from './helpers';
-import { searchJetpackThemes } from './selectors';
 import { getCurrentTheme } from './reducers/current-theme';
 import { getThemeById } from './reducers/themes';
 import { getQueryParams } from './reducers/themes-list';
-import { hasSiteChanged, hasParams } from './reducers/themes-last-query';
 import wpcom from 'lib/wp';
 
 export function fetchThemes( site ) {
@@ -29,7 +27,6 @@ export function fetchThemes( site ) {
 			} else {
 				const responseTime = ( new Date().getTime() ) - startTime;
 				dispatch( receiveThemes( data, site, queryParams, responseTime ) );
-				maybeSearchJetpack( dispatch, site );
 			}
 		};
 
@@ -38,42 +35,11 @@ export function fetchThemes( site ) {
 	}
 }
 
-/*
- * On Jetpack sites, we're not querying themes using the REST API, but fetch all of the installed
- * themes, and filter them within Calypso.
- */
-export function fetchJetpackThemes( site ) {
-	return ( dispatch, getState ) => {
-		const themesLastQueryState = getState().themes.themesLastQuery;
-		if ( hasSiteChanged( themesLastQueryState ) || ! hasParams( themesLastQueryState ) ) {
-			return dispatch( fetchThemes( site ) );
-		}
-
-		dispatch( {
-			type: ThemeConstants.SEARCH_THEMES,
-			themesList: searchJetpackThemes( getState() )
-		} );
-	}
-}
-
 export function fetchNextPage( site ) {
 	return dispatch => {
 		dispatch( incrementThemesPage( site ) );
-
-		if ( site.jetpack ) {
-			dispatch( fetchJetpackThemes( site ) );
-		} else {
-			dispatch( fetchThemes( site ) );
-		}
+		dispatch( fetchThemes( site ) );
 	}
-}
-
-function maybeSearchJetpack( dispatch, site ) {
-	if ( ! site.jetpack ) {
-		return;
-	}
-
-	return dispatch( fetchNextPage( site ) );
 }
 
 export function query( params ) {

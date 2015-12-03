@@ -37,10 +37,8 @@ export const reducer = ( state = initialState, payload ) => {
 				.set( 'previousSiteId', state.get( 'currentSiteId' ) )
 				.set( 'currentSiteId', action.site.ID )
 				.set( 'isJetpack', !! action.site.jetpack );
-
-		case ThemeConstants.SEARCH_THEMES:
-			return state.set( 'lastParams', null );
 	}
+
 	return state;
 };
 
