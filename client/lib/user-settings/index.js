@@ -4,6 +4,7 @@
 var debug = require( 'debug' )( 'calypso:user:settings' ),
 	merge = require( 'lodash/object/merge' ),
 	keys = require( 'lodash/object/keys' ),
+	traverseAndDecodeEntities = require( 'lib/formatting' ).traverseAndDecodeEntities,
 	isEmpty = require( 'lodash/lang/isEmpty' );
 
 /**
@@ -60,6 +61,7 @@ UserSettings.prototype.fetchSettings = function() {
 	debug( 'Fetching user settings' );
 	wpcom.me().settings( function( error, data ) {
 		if ( ! error ) {
+			traverseAndDecodeEntities( data );
 			this.settings = data;
 			this.initialized = true;
 			this.emit( 'change' );
