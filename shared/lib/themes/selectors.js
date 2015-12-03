@@ -13,23 +13,45 @@ export function getParams( state ) {
 	return state.themes.themesLastQuery.get( 'lastParams' ) || {};
 }
 
+export function hasSiteChanged( state ) {
+	return state.themes.themesLastQuery.get( 'previousSiteId' ) !==
+		state.themes.themesLastQuery.get( 'currentSiteId' );
+};
+
+export function hasParams( state ) {
+	return !! state.themes.themesLastQuery.get( 'lastParams' );
+}
+
+export function isFetchingNextPage( state ) {
+	return state.themes.themesList.getIn( [ 'queryState', 'isFetchingNextPage' ] );
+}
+
+export function isLastPage( state ) {
+	return state.themes.themesList.getIn( [ 'queryState', 'isLastPage' ] );
+}
+
 export function getThemes( state ) {
 	return state.themes.themes.get( 'themes' ).toJS();
 }
 
-export function searchJetpackThemes( state ) {
-	const { themesList } = state.themes;
+export function getThemeById( state, id ) {
+	const theme = state.themes.themes.getIn( [ 'themes', id ] );
+	return theme ? theme.toJS() : undefined;
+}
 
-	if ( ! isJetpack( state ) ) {
-		return state;
+export function getThemesList( state ) {
+	return state.themes.themesList.get( 'list' );
+}
+
+export function getFilteredThemes( state, search ) {
+	const allThemes = getThemesList( state )
+		.map( getThemeById.bind( null, state ) );
+
+	if ( ! isJetpack( state ) || ! search ) {
+		return allThemes;
 	}
 
-	const { search } = getParams( state );
-	const themes = search
-		? filter( getThemes( state ), theme => matches( theme, search ) )
-		: getThemes( state );
-
-	return themesList.set( 'list', pluck( themes, 'id' ) );
+	return filter( allThemes, theme => matches( theme, search ) );
 }
 
 function matches( theme, rawSearch ) {
