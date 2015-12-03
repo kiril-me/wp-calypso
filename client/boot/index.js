@@ -307,6 +307,7 @@ function boot() {
 	} );
 
 	require( 'my-sites' )();
+	require( 'plugins' )();
 
 	if ( config.isEnabled( 'olark' ) ) {
 		require( 'lib/olark' );
