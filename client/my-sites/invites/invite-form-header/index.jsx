@@ -4,6 +4,11 @@
 import React from 'react';
 import get from 'lodash/object/get';
 
+/**
+ * Internal dependencies
+ */
+import { decodeEntities } from 'lib/formatting';
+
 export default React.createClass( {
 	displayName: 'InviteFormHeader',
 
@@ -12,7 +17,7 @@ export default React.createClass( {
 	},
 
 	getSiteName() {
-		return get( this.props, 'blog_details.title' );
+		return decodeEntities( get( this.props, 'blog_details.title', '' ) );
 	},
 
 	getSiteDomain() {

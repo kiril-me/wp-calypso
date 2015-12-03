@@ -12,16 +12,19 @@ import CompactCard from 'components/card/compact';
 import Site from 'my-sites/site';
 import SitePlaceholder from 'my-sites/site/placeholder';
 import Gravatar from 'components/gravatar';
+import { decodeEntities } from 'lib/formatting';
 
 export default React.createClass( {
 	displayName: 'InviteHeader',
 
 	getInviterName() {
-		return get(
+		let name = get(
 			this.props,
 			'inviter.name',
 			this.translate( 'User', { context: 'Placeholder text while loading an invitation.' } )
 		);
+
+		return decodeEntities( name );
 	},
 
 	getInvitedYouText() {

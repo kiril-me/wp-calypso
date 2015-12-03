@@ -13,6 +13,7 @@ import Button from 'components/button';
 import config from 'config';
 import InviteFormHeader from 'my-sites/invites/invite-form-header';
 import { acceptInvite } from 'lib/invites/actions';
+import { decodeEntities } from 'lib/formatting';
 
 export default React.createClass( {
 
@@ -34,7 +35,7 @@ export default React.createClass( {
 									usernameWrap: <span className="invite-accept-logged-in__join-as-username" />
 								},
 								args: {
-									username: user && user.display_name
+									username: user && decodeEntities( user.display_name )
 								}
 							} )
 						}

@@ -9,8 +9,9 @@ var React = require( 'react' ),
 /**
  * Internal dependencies
  */
-var SiteIcon = require( 'components/site-icon' ),
-	SiteIndicator = require( 'my-sites/site-indicator' );
+import SiteIcon from 'components/site-icon';
+import SiteIndicator from 'my-sites/site-indicator';
+import { decodeEntities } from 'lib/formatting';
 
 module.exports = React.createClass( {
 	displayName: 'Site',
@@ -79,7 +80,7 @@ module.exports = React.createClass( {
 				>
 					<SiteIcon site={ site } />
 					<div className="site__info">
-						<div className="site__title">{ site.title }</div>
+						<div className="site__title">{ decodeEntities( site.title ) }</div>
 						<div className="site__domain">{ site.domain }</div>
 					</div>
 				</a>
